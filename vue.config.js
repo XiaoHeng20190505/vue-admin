@@ -50,6 +50,7 @@ module.exports = {
         // 在这种情况下，我们可以使用 `scss` 选项，对 `scss` 语法进行单独配置
         scss: {
           prependData: `@import "./src/styles/main.scss";`
+          // 指定scss文件进行样式更改时，一定要注意，在使用的页面上的style标签中加上lang="scss"，要不然不会再该页面起作用
         },
         // 给 less-loader 传递 Less.js 相关选wqdqd项
         less: {
