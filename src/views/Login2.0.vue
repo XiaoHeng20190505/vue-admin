@@ -56,14 +56,11 @@
   </div>
 </template>
 <script>
-import { reactive, ref, toRefs, isRef } from "@vue/composition-api"
 import { stripscript, checkUsername, checkPassword, checkVcode } from '../utils/validate.js'; //引用外部Jscript的函数方式：import,多个函数名使用逗号隔开
 export default {
   name: "Login",
-  setup(props, context) {
-    /**
-     * 数据验证
-     */
+  components: {}, // 声明组件的地方
+  data() {
     // 验证-邮箱
     var validateUsername = (rule, value, callback) => {
       if (value === "") {
@@ -76,8 +73,8 @@ export default {
     };
     // 验证-密码
     var validatePassword = (rule, value, callback) => {
-      ruleForm.password = stripscript(value);
-      value = ruleForm.password;
+      this.ruleForm.password = stripscript(value);
+      value = this.ruleForm.password;
       if (value === "") {
         callback(new Error("请输入密码！"));
       } else if (value.length < 6 || value.length >20) {
@@ -96,7 +93,7 @@ export default {
         callback(new Error("密码长度在6~20位"));
       } else if (!checkPassword(value)) {
         callback(new Error("密码格式不正确，应为数字+字母！"));
-      } else if (value != ruleForm.password) {
+      } else if (value != this.ruleForm.password) {
         callback(new Error("两次密码输入不一致，请检查！"));
       } else {
         callback();
@@ -115,51 +112,44 @@ export default {
       }
 
     };
-
-    /**
-     * 声明对象
-     */
-    const menutab = reactive([
+    // 存放数据的地方
+    return {
+      model: "login",
+      menutab: [
         { text: "登陆", current: true, type: "login"},
         { text: "注册", current: false, type: "register" }
-    ])
-    const ruleForm = reactive({
+      ],
+      ruleForm: {
         username: "",
         password: "",
         checkpass: "",
         vcode: ""
-    })
-    /**
-     * 声明模块值
-     */
-    const model = ref("login")
-    /**
-     * 声明form表单验证
-     */
-    const rules = reactive({
+      },
+      rules: {
         username: [{ validator: validateUsername, trigger: "blur" }],
         password: [{ validator: validatePassword, trigger: "blur" }],
         checkpass: [{ validator: validateCheckpass, trigger: "blur" }],
         vcode: [{ validator: validateVcode, trigger: "blur" }]
-    })
-    /**
-     * 声明函数
-     */
-    const doTab = (item => {
-        menutab.forEach(item => {
+      }
+    };
+  },
+  methods: {
+    // vue数据驱动视图，数据驱动视图渲染。
+    doTab(item) {
+      this.menutab.forEach(item => {
         item.current = false;
+        this.model = this.model;
       });
       if (item.index == 0) {
         item.current = true;
-        model.value = item.type;
+        this.model = item.type;
       } else {
         item.current = true;
-        model.value = item.type;
+        this.model = item.type;
       }
-
-    })
-    const submitForm = (formName => {
-        context.refs[formName].validate(valid => {
+    },
+    submitForm(formName) {
+      this.$refs[formName].validate(valid => {
         if (valid) {
           alert("submit!");
         } else {
@@ -167,26 +157,10 @@ export default {
           return false;
         }
       });
-    })
-    /**
-     * 声明生命周期
-     */
-    onMounted: {()=>{
-
-    }} // 挂载完成时
-
-    /**
-     * 数据返回的地方
-     */
-    return {
-        menutab,
-        ruleForm,
-        rules,
-        model,
-        doTab,
-        submitForm
-    };
-  }
+    }
+  }, // 定义函数（方法）
+  created: {}, // 创建完成时
+  Mounted: {} // 挂载完成时
 };
 </script>
 <style lang="scss" scoped>

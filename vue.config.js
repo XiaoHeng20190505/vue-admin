@@ -10,7 +10,7 @@ module.exports = {
     //如果你不需要生产环境的 source map，可以将其设置为 false 以加速生产环境构建。
     productionSourceMap: false,
     //是否在开发环境下通过 eslint-loader 在每次保存时 lint 代码
-    lintOnSave: true,
+    lintOnSave: false,
   
     /**
      * webpack配置,see https://github.com/vuejs/vue-cli/blob/dev/docs/webpack.md
@@ -34,7 +34,7 @@ module.exports = {
     //配置css
     css: {
       //去掉文件名中的 .module
-      requireModuleExtension: false,
+      // requireModuleExtension: false,
       loaderOptions: {
         // 给 sass-loader 传递选项
         // sass: {
