@@ -23,35 +23,42 @@
         class="login-form"
         size="medium"
       >
+        <!-- 用户名 -->
         <el-form-item prop="username" class="login-item">
           <label>邮箱</label>
-          <el-input type="text" v-model="ruleForm.username" autocomplete="off"></el-input>
+          <el-input type="text" v-model="ruleForm.username" autocomplete="off" placeholder="邮箱格式：xxx@xxx.com"></el-input>
         </el-form-item>
-
+        <!-- 密码 -->
         <el-form-item prop="password" class="login-item">
           <label>密码</label>
-          <el-input type="text" v-model="ruleForm.password" autocomplete="off"></el-input>
+          <el-input type="text" v-model="ruleForm.password" autocomplete="off" placeholder="密码格式：数字+字母"></el-input>
         </el-form-item>
-
+        <!-- 确认密码 -->
         <el-form-item prop="checkpass" class="login-item" v-if="model == 'register'">
           <label>确认密码</label>
-          <el-input type="text" v-model="ruleForm.checkpass" autocomplete="off"></el-input>
+          <el-input type="text" v-model="ruleForm.checkpass" autocomplete="off" placeholder="密码格式：数字+字母"></el-input>
         </el-form-item>
-
+        <!-- 验证码 -->
         <el-form-item prop="vcode" class="login-item">
           <label>验证码</label>
           <el-row :gutter="11">
             <!-- v-model.number 绑定数据，会限制只能输入数字 -->
-            <el-col :span="15"><el-input v-model="ruleForm.vcode"></el-input></el-col>
+            <el-col :span="15"><el-input v-model="ruleForm.vcode" placeholder="六位：数字和字母"></el-input></el-col>
             <el-col :span="8"><el-button type="success" class="login-btn" @click="getSms()">验证码</el-button></el-col>
           </el-row>
           
         </el-form-item>
-
+        <!-- 提交按钮 -->
         <el-form-item class="login-item">
-          <el-button type="danger" @click="submitForm('ruleForm')" class="login-btn login-submit">登陆</el-button>
+          <el-button 
+          type="danger" 
+          @click="submitForm('ruleForm')" 
+          class="login-btn login-submit" 
+          :disabled="submitButtonEnable"
+          >{{ model == 'login' ? '登录' : '注册' }}</el-button>
         </el-form-item>
       </el-form>
+      <!-- 表单结束 -->
     </div>
   </div>
 </template>
@@ -62,6 +69,7 @@ import { stripscript, checkUsername, checkPassword, checkVcode } from '../utils/
 export default {
   name: "Login",
   setup(props, context) {
+    // console.log(context)//可查看context包括什么内容
     /**
      * 数据验证
      */
@@ -118,22 +126,24 @@ export default {
     };
 
     /**
-     * 声明对象
+     * 声明数据,声明的都是一个对象
      */
+    /**模块登录、注册按钮 */
     const menutab = reactive([
         { text: "登陆", current: true, type: "login"},
         { text: "注册", current: false, type: "register" }
     ])
+    /**form表单信息 */
     const ruleForm = reactive({
         username: "",
         password: "",
         checkpass: "",
         vcode: ""
     })
-    /**
-     * 声明模块值
-     */
+    /** 声明模块值*/
     const model = ref("login")
+    /**提交按钮是否可用 */
+    const submitButtonEnable = ref(true)
     /**
      * 声明form表单验证
      */
@@ -146,6 +156,7 @@ export default {
     /**
      * 声明函数
      */
+    /**登录、注册模块切换 */
     const doTab = (item => {
         menutab.forEach(item => {
         item.current = false;
@@ -159,15 +170,16 @@ export default {
       }
 
     })
-    /**
-     * 获取验证码
-     */
+    /**获取验证码*/
     const getSms = (() => {
-      getVcode()
+      if(!checkUsername(ruleForm.username)){
+        context.root.$message.error('用户名格式错误')
+        return
+      }
+      let data = {username: ruleForm.username,Model: model.value}
+      getVcode(data)
     })
-    /**
-     * form表单提交
-     */
+    /**form表单提交*/
     const submitForm = (formName => {
       //   context.refs[formName].validate(valid => {
       //   // if (valid) {
@@ -179,19 +191,12 @@ export default {
       //   // 为给定 ID 的 user 创建请求
         
       // });
-      axios.post('/user?ID=12345')
-          .then(function (response) {
-            console.log(response);
-          })
-          .catch(function (error) {
-            console.log(error);
-          });
     })
+
     /**
      * 声明生命周期
      */
     onMounted: {()=>{
-
     }} // 挂载完成时
 
     /**
@@ -202,6 +207,7 @@ export default {
         ruleForm,
         rules,
         model,
+        submitButtonEnable,
         doTab,
         getSms,
         submitForm

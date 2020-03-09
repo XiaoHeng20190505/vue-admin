@@ -3,19 +3,16 @@
  */
 
 // 引入axios依赖包
-import axios from 'axios'
+import axios from 'axios' //引入axios，进行数据请求
+import { Message } from 'element-ui'//引入element-ui的消息提示函数,需要使用Message函数，用大括号{}包裹起来
 
 const BASEURL = process.env.NODE_ENV === 'production' ? ''  : '/devapi'
-console.log(process.env.NODE_ENV)
-console.log(BASEURL)
 // 初始化axios实例，之后使用axios时都用service调用
 const service = axios.create({
     baseURL: BASEURL,//初始化axios的时候指定访问的资源服务器。
     //是在访问的接口之前加了一个前缀，比如本来要访问/getSms,但是加了一个前缀就变成了访问/devapi/getSms
     timeout: 1000
 })
-console.dir(service)
-
 // 添加请求拦截器
 service.interceptors.request.use(function (config) {
     // 在发送请求之前做些什么
@@ -28,7 +25,12 @@ service.interceptors.request.use(function (config) {
 // 添加响应拦截器
 service.interceptors.response.use(function (response) {
     // 对响应数据做点什么
-    return response;
+    let data = response.data
+    if(data.resCode != 0){
+      Message.error(data.message)
+      return Promise.reject(error)
+    }
+    return response
   }, function (error) {
     // 对响应错误做点什么
     return Promise.reject(error);

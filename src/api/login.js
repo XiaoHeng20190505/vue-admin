@@ -5,13 +5,11 @@ import service from '../utils/request'
 /**
  * 获取验证码
  */
-export function getVcode() {
+export function getVcode(data) {
     service.request({
         method: 'post',
         url: '/getSms/',
-        data: {
-            firstname: 'nelson'
-        }
+        data//当参数等于data时，可将data: data简写为data形式
     })
 }
 /**
