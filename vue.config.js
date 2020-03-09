@@ -77,7 +77,25 @@ module.exports = {
       https: false, // 编译失败时刷新页面
       hot: true, // 开启热加载
       hotOnly: false,
-      proxy: null, // 设置代理
+      proxy: {
+        '/devapi': {  
+          /**
+           * 代理设置。当访问域名的时候，碰到/devapi时，将前面的域名转换成target的属性值
+           * 例如在访问http://192.168.1.114:8080/devapi/时
+           * 将http://192.168.1.114:8080域名转换成http://www.web-jshtml.cn/productapi
+           * 
+           * 实际访问的URL是http://www.web-jshtml.cn/productapi/devapi
+           * 这时需要将/devapi转换为空字符串，因为我们实际访问URL的地址时不需要这个前缀
+           * 
+           * 当然，如果不想多次一举进行字符串替换，可以在创建axios实例时不设置前缀，这样就可以不进行替换了
+           */
+          target: 'http://www.web-jshtml.cn/productapi',
+          changeOrigin: true,
+          pathRewrite: {
+            '^/devapi': ''
+          }
+        }
+      }, // 设置代理
       overlay: { // 全屏模式下是否显示脚本错误
         warnings: true,
         errors: true

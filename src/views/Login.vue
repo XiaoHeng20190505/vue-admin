@@ -43,7 +43,7 @@
           <el-row :gutter="11">
             <!-- v-model.number 绑定数据，会限制只能输入数字 -->
             <el-col :span="15"><el-input v-model="ruleForm.vcode"></el-input></el-col>
-            <el-col :span="8"><el-button type="success" class="login-btn">验证码</el-button></el-col>
+            <el-col :span="8"><el-button type="success" class="login-btn" @click="getSms()">验证码</el-button></el-col>
           </el-row>
           
         </el-form-item>
@@ -56,6 +56,7 @@
   </div>
 </template>
 <script>
+import  { getVcode }  from '../api/login'
 import { reactive, ref, toRefs, isRef } from "@vue/composition-api"
 import { stripscript, checkUsername, checkPassword, checkVcode } from '../utils/validate.js'; //引用外部Jscript的函数方式：import,多个函数名使用逗号隔开
 export default {
@@ -158,15 +159,33 @@ export default {
       }
 
     })
+    /**
+     * 获取验证码
+     */
+    const getSms = (() => {
+      getVcode()
+    })
+    /**
+     * form表单提交
+     */
     const submitForm = (formName => {
-        context.refs[formName].validate(valid => {
-        if (valid) {
-          alert("submit!");
-        } else {
-          console.log("error submit!!");
-          return false;
-        }
-      });
+      //   context.refs[formName].validate(valid => {
+      //   // if (valid) {
+      //   //   alert("submit!");
+      //   // } else {
+      //   //   console.log("error submit!!");
+      //   //   return false;
+      //   // }
+      //   // 为给定 ID 的 user 创建请求
+        
+      // });
+      axios.post('/user?ID=12345')
+          .then(function (response) {
+            console.log(response);
+          })
+          .catch(function (error) {
+            console.log(error);
+          });
     })
     /**
      * 声明生命周期
@@ -176,7 +195,7 @@ export default {
     }} // 挂载完成时
 
     /**
-     * 数据返回的地方
+     * 数据返回的地方,声明的方法也要return出去
      */
     return {
         menutab,
@@ -184,6 +203,7 @@ export default {
         rules,
         model,
         doTab,
+        getSms,
         submitForm
     };
   }
