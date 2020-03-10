@@ -6,7 +6,9 @@ import service from '../utils/request'
  * 获取验证码
  */
 export function getVcode(data) {
-    service.request({
+    console.log('data-----------')
+    console.log(data)
+    return service.request({
         method: 'post',
         url: '/getSms/',
         data//当参数等于data时，可将data: data简写为data形式
@@ -15,7 +17,21 @@ export function getVcode(data) {
 /**
  * 登陆
  */
+export function Login(data) {
+    return service.request({
+        method: 'post',
+        url: '/login/',
+        data//当参数等于data时，可将data: data简写为data形式
+    })
+}
 
 /**
  * 注册
  */
+export function Register(data) {
+    return service.request({
+        method: 'post',
+        url: '/register/',
+        data//当参数等于data时，可将data: data简写为data形式
+    })
+}

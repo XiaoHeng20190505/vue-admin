@@ -31,12 +31,12 @@
         <!-- 密码 -->
         <el-form-item prop="password" class="login-item">
           <label>密码</label>
-          <el-input type="text" v-model="ruleForm.password" autocomplete="off" placeholder="密码格式：数字+字母"></el-input>
+          <el-input type="password" v-model="ruleForm.password" autocomplete="off" placeholder="密码格式：数字+字母"></el-input>
         </el-form-item>
         <!-- 确认密码 -->
         <el-form-item prop="checkpass" class="login-item" v-if="model == 'register'">
           <label>确认密码</label>
-          <el-input type="text" v-model="ruleForm.checkpass" autocomplete="off" placeholder="密码格式：数字+字母"></el-input>
+          <el-input type="password" v-model="ruleForm.checkpass" autocomplete="off" placeholder="密码格式：数字+字母"></el-input>
         </el-form-item>
         <!-- 验证码 -->
         <el-form-item prop="vcode" class="login-item">
@@ -44,7 +44,7 @@
           <el-row :gutter="11">
             <!-- v-model.number 绑定数据，会限制只能输入数字 -->
             <el-col :span="15"><el-input v-model="ruleForm.vcode" placeholder="六位：数字和字母"></el-input></el-col>
-            <el-col :span="8"><el-button type="success" class="login-btn" @click="getSms()">验证码</el-button></el-col>
+            <el-col :span="8"><el-button type="success" class="login-btn" @click="getSms()" :disabled="VcodeData.VcodeStatus">{{ VcodeData.VcodeContext }}</el-button></el-col>
           </el-row>
           
         </el-form-item>
@@ -63,13 +63,14 @@
   </div>
 </template>
 <script>
-import  { getVcode }  from '../api/login'
+import  { getVcode, Register, Login }  from '../api/login'
 import { reactive, ref, toRefs, isRef } from "@vue/composition-api"
 import { stripscript, checkUsername, checkPassword, checkVcode } from '../utils/validate.js'; //引用外部Jscript的函数方式：import,多个函数名使用逗号隔开
 export default {
   name: "Login",
   setup(props, context) {
     // console.log(context)//可查看context包括什么内容
+    // var root = context.root
     /**
      * 数据验证
      */
@@ -144,6 +145,16 @@ export default {
     const model = ref("login")
     /**提交按钮是否可用 */
     const submitButtonEnable = ref(true)
+    /**验证码数据 */
+    const VcodeData = reactive({
+      VcodeStatus: false,
+      VcodeContext: '验证码'
+    })
+    /**60秒倒计时 */
+    const TimeDown = reactive({
+      timecount: 60,
+      timer: 1
+    })
     /**
      * 声明form表单验证
      */
@@ -164,9 +175,11 @@ export default {
       if (item.index == 0) {
         item.current = true;
         model.value = item.type;
+        resetForm()
       } else {
         item.current = true;
         model.value = item.type;
+        resetForm()
       }
 
     })
@@ -176,21 +189,114 @@ export default {
         context.root.$message.error('用户名格式错误')
         return
       }
-      let data = {username: ruleForm.username,Model: model.value}
-      getVcode(data)
+      let data = {username: ruleForm.username,module: model.value}
+      /**在获取验证码期间显示'发送中'且按钮不可用
+       * 获取验证码成功之后开始倒计时
+       * 倒计时结束之后，验证码按钮设置为'再次获取'
+      */
+      VcodeData.VcodeStatus = true
+      VcodeData.VcodeContext = '发送中'
+      /** //模拟服务器卡顿
+        setTimeout(() => {
+          getVcode(data).then(response => {
+          let result = response.data
+            if(result.resCode === 0) {
+              context.root.$message({
+                message:result.message,
+                type: 'success'
+              })
+            }
+          }).catch(error => {
+            console.log(error)
+          })
+        }, 3000);
+      */ 
+      getVcode(data).then(response => {
+        console.log(response)
+          let result = response.data
+            if(result.resCode === 0) {
+              context.root.$message({
+                message:result.message,
+                type: 'success',
+                duration: 2000,
+                showClose: true
+              })
+              // let count =10//倒计时也可以声明变量
+              TimeDown.timer = setInterval(() => {
+                --TimeDown.timecount
+                if(TimeDown.timecount == 0) {
+                  clearInterval(TimeDown.timer)
+                  VcodeData.VcodeStatus = false
+                  VcodeData.VcodeContext = '再次获取'
+                }else {
+                  VcodeData.VcodeContext = `倒计时${TimeDown.timecount}秒`
+                  // console.log(count)
+                }
+              },1000)
+              //启用提交按钮
+              submitButtonEnable.value = false
+            }
+          }).catch(error => {
+            console.log(error)
+        }) 
     })
     /**form表单提交*/
     const submitForm = (formName => {
-      //   context.refs[formName].validate(valid => {
-      //   // if (valid) {
-      //   //   alert("submit!");
-      //   // } else {
-      //   //   console.log("error submit!!");
-      //   //   return false;
-      //   // }
-      //   // 为给定 ID 的 user 创建请求
+      let requestData = {
+        username: ruleForm.username,
+        password: ruleForm.password,
+        code: ruleForm.vcode
+      }
+        context.refs[formName].validate(valid => {
+        if (valid) {
+          if(model.value == 'login'){
+            Login(requestData).then(response => {
+              let result =response.data
+              if(result.resCode == 0){
+                context.root.$message({
+                  message: result.message,
+                  type: 'success',
+                  showClose: true
+                })
+              }else {
+                contex.root.$message.error(result.message)
+                return
+              }
+            }).catch(error => {
+            })
+          }else {
+            Register(requestData).then(response => {
+              let result =response.data
+              if(result.resCode == 0){
+                context.root.$message({
+                  message: result.message,
+                  type: 'success',
+                  showClose: true
+                })
+              }else {
+                contex.root.$message.error(result.message)
+                return
+              }
+            }).catch(error => {
+            })
+          }
+        } else {
+          context.root.$message.error('有输入框为空,请检查')
+          return false;
+        }
+        //为给定 ID 的 user 创建请求
         
-      // });
+      });
+    })
+    /**在切换登陆注册按钮时重置页面数据 */
+    const resetForm = (() => {
+      context.refs.ruleForm.resetFields() //输入信息重置
+      VcodeData.VcodeStatus = false //验证码按钮重置
+      VcodeData.VcodeContext ='验证码'
+      clearInterval(TimeDown.timer) //清掉倒计时
+      TimeDown.timecount = 60
+      submitButtonEnable.value = true //提交按钮不可用
+      
     })
 
     /**
@@ -208,6 +314,7 @@ export default {
         rules,
         model,
         submitButtonEnable,
+        VcodeData,
         doTab,
         getSms,
         submitForm
