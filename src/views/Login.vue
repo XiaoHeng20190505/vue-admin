@@ -69,7 +69,7 @@ import { stripscript, checkUsername, checkPassword, checkVcode } from '../utils/
 export default {
   name: "Login",
   setup(props, context) {
-    // console.log(context)//可查看context包括什么内容
+    console.log(context.parent.$route)//可查看context包括什么内容
     // var root = context.root
     /**
      * 数据验证
@@ -212,7 +212,7 @@ export default {
         }, 3000);
       */ 
       getVcode(data).then(response => {
-        console.log(response)
+        // console.log(response)
           let result = response.data
             if(result.resCode === 0) {
               context.root.$message({
@@ -257,6 +257,10 @@ export default {
                   message: result.message,
                   type: 'success',
                   showClose: true
+                })
+                // vue3.0z中路由控制实在context.parent.$router中，路由读取可在context.parent.$route中
+                context.parent.$router.push({
+                  name: 'Console'
                 })
               }else {
                 contex.root.$message.error(result.message)

@@ -1,14 +1,23 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import Login from "../views/Login.vue";
+
 
 Vue.use(VueRouter);
-
+// 设置进行路由的跳转
 const routes = [
   {
     path: "/",
-    name: "Login",
-    component: Login
+    redirect: "/login" // 重定向页面
+  },
+  {
+    path: '/login',
+    name: 'Login',
+    component: () => import('../views/Login.vue')
+  },
+  {
+    path: "/console",
+    name: "Console",
+    component: () => import("../views/Console/Console.vue")
   }
   // {
   //   path: "/about",
