@@ -6,8 +6,8 @@ import service from '../utils/request'
  * 获取验证码
  */
 export function getVcode(data) {
-    console.log('data-----------')
-    console.log(data)
+    // console.log('data-----------')
+    // console.log(data)
     return service.request({
         method: 'post',
         url: '/getSms/',
