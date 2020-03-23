@@ -36,8 +36,8 @@ module.exports = {
     css: {
       //去掉文件名中的 .module
       // requireModuleExtension: false,
-      extract: true,
-      sourceMap: false,
+      // extract: true,
+      // sourceMap: false,
       loaderOptions: {
         // 给 sass-loader 传递选项
         // sass: {
@@ -54,7 +54,7 @@ module.exports = {
         scss: {
           prependData: `@import "./src/styles/main.scss";`
           // 指定scss文件进行样式更改时，一定要注意，在使用的页面上的style标签中加上lang="scss"，要不然不会再该页面起作用
-        },
+        }
         // 给 less-loader 传递 Less.js 相关选项
         // less: {
         //   // http://lesscss.org/usage/#less-options-strict-units `Global Variables`

@@ -9,7 +9,6 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-@import '../../../styles/config.scss';
 #main-wrap {
 	position: fixed;
 	top: 75px;

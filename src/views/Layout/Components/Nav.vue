@@ -6,14 +6,17 @@
       background-color="transparent"
       text-color="white"
       :collapse="isCollapse"
+      router
     >
       <template v-for="(item, index) in routes">
         <el-submenu v-if="!item.hidden" :key="item.id" :index="index+''">
+          <!-- 一级菜单 -->
           <template slot="title">
             <i class="el-icon-location"></i>
             <span slot="title">{{ item.meta.name }}</span>
           </template>
-          <el-menu-item v-for="subitem in item.children" :key="subitem.id">{{ subitem.meta.name }}</el-menu-item>
+          <!-- 子菜单 -->
+          <el-menu-item v-for="subitem in item.children" :key="subitem.id" :index="subitem.path">{{ subitem.meta.name }}</el-menu-item>
         </el-submenu>
       </template>
     </el-menu>
@@ -51,7 +54,6 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-@import "../../../styles/config.scss";
 #nav-wrap {
   position: fixed;
   top: 0;

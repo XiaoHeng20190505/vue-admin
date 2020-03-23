@@ -31,7 +31,7 @@ const routes = [
     meta: {
       name: '控制台'
     },
-    redirect: '/consoleIndex',  // 重定路由到主要页面的路由
+    // redirect: '/consoleIndex',  // 重定路由到主要页面的路由
     // component: () => import("../views/Console/Console.vue")
     component: () => import("../views/Layout/Layout.vue"),
     children: [
@@ -54,7 +54,7 @@ const routes = [
     meta: {
       name: '信息'
     },
-    redirect: '/infoList',  // 重定路由到主要页面的路由
+    // redirect: '/infoList',  // 重定路由到主要页面的路由
     // component: () => import("../views/Console/Console.vue")
     component: () => import("../views/Layout/Layout.vue"),
     children: [
@@ -65,16 +65,16 @@ const routes = [
           name: '信息列表'
         },
         // component: () => import("../views/Console/Console.vue")
-        component: () => import("../views/Console/Console.vue")
+        component: () => import("../views/News/InfoList.vue")
       },
       {
         path: "/infoCategory",
         name: "InfoCategory",
         meta: {
-          name: '信息目录'
+          name: '信息分类'
         },
         // component: () => import("../views/Console/Console.vue")
-        component: () => import("../views/Console/Console.vue")
+        component: () => import("../views/News/InfoCatagory.vue")
       }
     ]
   },
@@ -86,8 +86,7 @@ const routes = [
     meta: {
       name: '用户'
     },
-    redirect: '/userList',  // 重定路由到主要页面的路由
-    // component: () => import("../views/Console/Console.vue")
+    // redirect: '/userList',  // 重定路由到主要页面的路由
     component: () => import("../views/Layout/Layout.vue"),
     children: [
       {
@@ -97,7 +96,7 @@ const routes = [
           name: '用户列表'
         },
         // component: () => import("../views/Console/Console.vue")
-        component: () => import("../views/Console/Console.vue")
+        component: () => import("../views/User/UserList.vue")
       },
       {
         path: "/userManager",
@@ -106,7 +105,7 @@ const routes = [
           name: '用户管理'
         },
         // component: () => import("../views/Console/Console.vue")
-        component: () => import("../views/Console/Console.vue")
+        component: () => import("../views/User/UserManager.vue")
       }
     ]
   }
