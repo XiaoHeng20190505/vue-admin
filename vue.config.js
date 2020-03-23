@@ -1,3 +1,4 @@
+const path = require('path');
 module.exports = {
     // 基本路径
     publicPath: process.env.NODE_ENV === 'production'
@@ -35,6 +36,8 @@ module.exports = {
     css: {
       //去掉文件名中的 .module
       // requireModuleExtension: false,
+      extract: true,
+      sourceMap: false,
       loaderOptions: {
         // 给 sass-loader 传递选项
         // sass: {
@@ -52,15 +55,15 @@ module.exports = {
           prependData: `@import "./src/styles/main.scss";`
           // 指定scss文件进行样式更改时，一定要注意，在使用的页面上的style标签中加上lang="scss"，要不然不会再该页面起作用
         },
-        // 给 less-loader 传递 Less.js 相关选wqdqd项
-        less: {
-          // http://lesscss.org/usage/#less-options-strict-units `Global Variables`
-          // `primary` is global variables fields name
-          globalVars: {
-            primary: '#fff'
-          }
-        }
-      },
+        // 给 less-loader 传递 Less.js 相关选项
+        // less: {
+        //   // http://lesscss.org/usage/#less-options-strict-units `Global Variables`
+        //   // `primary` is global variables fields name
+        //   globalVars: {
+        //     primary: '#fff'
+        //   }
+        // }
+      }
     },
     // use thread-loader for babel & TS in production build
     // enabled by default if the machine has more than 1 cores
