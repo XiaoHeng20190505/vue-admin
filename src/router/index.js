@@ -1,6 +1,7 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-
+// 引入布局组件
+import Layout from "../views/Layout/Layout.vue";//对路由的优化，将路由指向Layout.vue的提取出来
 
 Vue.use(VueRouter);
 // 设置进行路由的跳转
@@ -29,11 +30,12 @@ const routes = [
     hidden: false,
     name: "Console",
     meta: {
-      name: '控制台'
+      name: '控制台',
+      icon: 'consoleIcon'
     },
-    // redirect: '/consoleIndex',  // 重定路由到主要页面的路由
-    // component: () => import("../views/Console/Console.vue")
-    component: () => import("../views/Layout/Layout.vue"),
+    redirect: '/consoleIndex',  // 重定路由到主要页面的路由
+    // component: () => import("../views/Console/Console.vue"),
+    component: Layout,
     children: [
       {
         path: "/consoleIndex",
@@ -52,11 +54,12 @@ const routes = [
     name: "Info",
     hidden: false,
     meta: {
-      name: '信息'
+      name: '信息',
+      icon: 'infoIcon'
     },
     // redirect: '/infoList',  // 重定路由到主要页面的路由
     // component: () => import("../views/Console/Console.vue")
-    component: () => import("../views/Layout/Layout.vue"),
+    component: Layout,
     children: [
       {
         path: "/infoList",
@@ -84,10 +87,11 @@ const routes = [
     name: "User",
     hidden: false,
     meta: {
-      name: '用户'
+      name: '用户',
+      icon: 'userIcon'
     },
     // redirect: '/userList',  // 重定路由到主要页面的路由
-    component: () => import("../views/Layout/Layout.vue"),
+    component: Layout,
     children: [
       {
         path: "/userList",

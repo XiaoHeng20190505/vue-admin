@@ -9,10 +9,13 @@
       router
     >
       <template v-for="(item, index) in routes">
+        <!-- 因为index不允许为数字，所以技巧将index+空字符串转换为字符串形式 -->
         <el-submenu v-if="!item.hidden" :key="item.id" :index="index+''">
           <!-- 一级菜单 -->
           <template slot="title">
-            <i class="el-icon-location"></i>
+            <!-- 第一种图标的设定可使用element-ui的图标，第二种会使用自定义矢量图标，选用阿里矢量图标库，使用svg -->
+            <!-- <i class="el-icon-location"></i> -->
+            <svgicon :iconName="item.meta.icon" :iconClass="item.meta.icon"></svgicon>
             <span slot="title">{{ item.meta.name }}</span>
           </template>
           <!-- 子菜单 -->
@@ -20,6 +23,7 @@
         </el-submenu>
       </template>
     </el-menu>
+   
   </div>
 </template>
 <script>
@@ -61,5 +65,8 @@ export default {
   width: $navMenuWidth;
   height: 100vh;
   background-color: #344a5f;
+}
+#SvgIcon {
+  display: inline-block;
 }
 </style>
