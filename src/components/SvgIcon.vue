@@ -13,19 +13,14 @@ export default {
   props:{
     iconName: {
       type: String,
-      // require: true,
       default: ''
     },
     iconClass: {
       tyle: String,
-      // require: true,
       default: ''
     }
   },
   setup(props, context) {
-    // const msg = ref('我是SvgIcon组件,图片内容')
-    console.log('props')
-    console.log(props)
     const svgName = computed(() => {
       return `#icon-${props.iconName}`
     })
@@ -37,7 +32,7 @@ export default {
         return `svg-icon`
       }
     })
-    console.log(svgName.value)
+    
     return {
       svgName,
       svgClass
@@ -54,7 +49,11 @@ export default {
   color: white;
   margin-right: 10px;
   font-size: 20px;
+  &.menuIcon-header {
+    fill: black;
+    font-size: 25px;
+    cursor: pointer;
+    margin-bottom: -8px;
+  }
 }
-  // color: #fff !important;
-
 </style>

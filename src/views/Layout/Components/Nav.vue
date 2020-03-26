@@ -1,11 +1,12 @@
 <template>
-  <div id="nav-wrap">
+  <div id="nav-wrap" :class="[navMenuStatus ? 'close' : 'open']">
+    <div class="flexbox">
+      <img src="../../../sources/img/headImg.jpg" alt="图片" :height="imgHeight" :width="imgWidth">
+    </div>
     <el-menu
-      @open="handleOpen"
-      @close="handleClose"
       background-color="transparent"
       text-color="white"
-      :collapse="isCollapse"
+      :collapse="navMenuStatus"
       router
     >
       <template v-for="(item, index) in routes">
@@ -27,32 +28,32 @@
   </div>
 </template>
 <script>
-import { reactive, ref, toRefs, isRef } from "@vue/composition-api";
+import { reactive, ref, toRefs, isRef, computed } from "@vue/composition-api";
 export default {
   name: "layoutnav",
   setup(props, { root }) {
-    /**
-     * 定义变量
-     */
-    const isCollapse = ref(false);
-
+    /**定义变量 */
+    const imgHeight = ref('200px')
+    const imgWidth = ref('200px')
     const routes = reactive(root.$router.options.routes);
-    //   console.log(routes)
-
-    /**定义处理函数 */
-    const handleOpen = (key, keyPath) => {
-      console.log(key, keyPath);
-    };
-    const handleClose = (key, keyPath) => {
-      console.log(key, keyPath);
-    };
+    /**添加数据监听 */
+		const navMenuStatus = computed(() => {
+      if(root.$store.state.isCollapse){
+        imgHeight.value = '50px'
+        imgWidth.value = '50px'
+      }else{
+        imgHeight.value = '200px'
+        imgWidth.value = '200px'
+      }
+			return root.$store.state.isCollapse
+		})
 
     /**数据 return 出去才能获取使用 */
     return {
-      isCollapse,
-      routes,
-      handleOpen,
-      handleClose
+      imgHeight,
+      imgWidth,
+      navMenuStatus,
+      routes
     };
   }
 };
@@ -62,11 +63,29 @@ export default {
   position: fixed;
   top: 0;
   left: 0;
-  width: $navMenuWidth;
   height: 100vh;
   background-color: #344a5f;
+  @include webkit(transition, $animations);
+}
+/**控制左侧导航栏的扩展与折叠 */
+.open {
+  width: $navMenuWidth;
+}
+.close {
+  width: 64px;
 }
 #SvgIcon {
   display: inline-block;
+}
+.flexbox {
+  align-items: center;;
+}
+img {
+  border-radius: 50%;
+  margin: 10px auto;
+  @include webkit(transition, $animations);
+}
+.el-menu {
+  border: none;
 }
 </style>
