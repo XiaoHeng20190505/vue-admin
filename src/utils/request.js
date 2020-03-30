@@ -30,6 +30,7 @@ service.interceptors.response.use(function (response) {
       Message.error(data.message)
       return Promise.reject(error)
     }else {
+      console.log("相应拦截")
       return response
     }
   }, function (error) {

@@ -1,21 +1,14 @@
 import Vue from "vue";
 import Vuex from "vuex";
 
-Vue.use(Vuex);
+import navStatusStore from './navStatusStore.js'
+import loginStore from './LoginStore.js'
 
+Vue.use(Vuex);
+/**设置一个 store 的输出口 */
 export default new Vuex.Store({
-  state: {
-    isCollapse: false
-  },
-  /**添加数据的监听事件，检测数据的变化，可进行处理 */
-  getters: {
-    isCollapse: state => state.isCollapse
-  },
-  mutations: {
-    setIsCollapseStatus(state) {
-      state.isCollapse = !state.isCollapse
-    }
-  },
-  actions: {},
-  modules: {}
+  modules: {
+    navStatusStore,
+    loginStore
+  }
 });

@@ -22,7 +22,7 @@ export default {
   setup(props, { root }) {
     /**添加数据监听 */
 		const navMenuStatus = computed(() => {
-			return root.$store.state.isCollapse
+			return root.$store.state.navStatusStore.isCollapse
     })
     return {
       navMenuStatus

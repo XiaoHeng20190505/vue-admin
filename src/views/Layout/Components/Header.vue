@@ -20,7 +20,8 @@ export default {
 		/**声明使用函数 */
 		const changeNavStatus = () => {
 			/**调用 store 中的函数 ，触发更新信息*/
-			root.$store.commit('setIsCollapseStatus')
+			// root.$store.commit('setIsCollapseStatus')//第一种：执行 store 中的 mutatios 中的 setIsCollapseStatus 方法
+			root.$store.dispatch('navStatusStore/setMenuStatus', {"name":"param"})//第二种：执行 store 中的 actions 中的 setMenuStatus 方法
 		}
 		return {
 			changeNavStatus

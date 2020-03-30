@@ -38,14 +38,14 @@ export default {
     const routes = reactive(root.$router.options.routes);
     /**添加数据监听 */
 		const navMenuStatus = computed(() => {
-      if(root.$store.state.isCollapse){
+      if(root.$store.state.navStatusStore.isCollapse){
         imgHeight.value = '50px'
         imgWidth.value = '50px'
       }else{
         imgHeight.value = '200px'
         imgWidth.value = '200px'
       }
-			return root.$store.state.isCollapse
+			return root.$store.state.navStatusStore.isCollapse
 		})
 
     /**数据 return 出去才能获取使用 */
