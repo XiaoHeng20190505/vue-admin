@@ -13,7 +13,7 @@ Vue.component('svgicon',SvgIcon)  //注册全局组件
 
 const req = require.context('../sources/icon', false, /\.svg$/)
 const requireAll = requireContext => {
-	console.log(requireContext.keys().map(requireContext))
+	// console.log(requireContext.keys().map(requireContext))
   return requireContext.keys().map(requireContext)
 }
 requireAll(req)

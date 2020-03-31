@@ -102,7 +102,7 @@ module.exports = {
            * 
            * 当然，如果不想多次一举进行字符串替换，可以在创建axios实例时不设置前缀，这样就可以不进行替换了
            */
-          target: 'http://www.web-jshtml.cn/productapi',
+          target: 'http://www.web-jshtml.cn/productapi/token',
           changeOrigin: true,
           pathRewrite: {
             '^/devapi': ''

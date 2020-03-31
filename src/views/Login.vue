@@ -97,7 +97,7 @@ import {
 export default {
   name: "Login",
   setup(props, context) {
-    console.log(context.parent.$route); //可查看context包括什么内容
+    // console.log(context.parent.$route); //可查看context包括什么内容
     // var root = context.root
     /**
      * 数据验证
@@ -212,7 +212,7 @@ export default {
     /**获取验证码*/
     const getSms = () => {
       if (!checkUsername(ruleForm.username)) {
-        context.root.$message.error("用户名格式错误");
+        onMessage("用户名格式错误", "error", true);
         return;
       }
       let data = { username: ruleForm.username, module: model.value };
@@ -243,59 +243,21 @@ export default {
           // console.log(response)
           let result = response.data;
           if (result.resCode === 0) {
-            context.root.$message({
-              message: result.message,
-              type: "success",
-              duration: 2000,
-              showClose: true
-            });
+            onMessage(result.message, "success", true);
             // let count =10//倒计时也可以声明变量
-            TimeDown.timer = setInterval(() => {
-              --TimeDown.timecount;
-              if (TimeDown.timecount == 0) {
-                clearInterval(TimeDown.timer);
-                VcodeData.VcodeStatus = false;
-                VcodeData.VcodeContext = "再次获取";
-              } else {
-                VcodeData.VcodeContext = `倒计时${TimeDown.timecount}秒`;
-                // console.log(count)
-              }
-            }, 1000);
+            countDown(60)
             //启用提交按钮
             submitButtonEnable.value = false;
           }
         })
-        .catch((error) => {
-          console.log(error.message.indexOf("timeout"))
-          if(error.message.indexOf("timeout") === -1){
-            context.root.$message({
-              message: "请求异常: "+error.message,
-              type: "error",
-              duration: 2000,
-              showClose: true
-            });
-          }else{
-            context.root.$message({
-              message: "请求超时,30秒之后再次获取",
-              type: "error",
-              duration: 2000,
-              showClose: true
-            });
-            
+        .catch(error => {
+          if (error.message.indexOf("timeout") === -1) {
+            onMessage("请求异常: " + error.message, "error", true);
+          } else {
+            onMessage("请求超时,30秒之后再次获取", "error", true);
           }
           /**请求错误30秒之后重新获取 */
-          TimeDown.timecount = 30
-          TimeDown.timer = setInterval(() => {
-              --TimeDown.timecount;
-              if (TimeDown.timecount == 0) {
-                clearInterval(TimeDown.timer);
-                VcodeData.VcodeStatus = false;
-                VcodeData.VcodeContext = "再次获取";
-              } else {
-                VcodeData.VcodeContext = `倒计时${TimeDown.timecount}秒`;
-                // console.log(count)
-              }
-            }, 1000);
+          countDown(30)
         });
     };
     /**form表单提交*/
@@ -308,45 +270,39 @@ export default {
       context.refs[formName].validate(valid => {
         if (valid) {
           if (model.value == "login") {
-            context.root.$store.dispatch("storeLogin", requestData)
+            context.root.$store
+              .dispatch("loginStore/storeLogin", requestData)
               .then(response => {
                 let result = response.data;
                 if (result.resCode == 0) {
-                  context.root.$message({
-                    message: result.message,
-                    type: "success",
-                    showClose: true
-                  });
+                  onMessage(result.message, "success", true);
                   // vue3.0z中路由控制实在context.parent.$router中，路由读取可在context.parent.$route中
                   context.parent.$router.push({
                     name: "Console"
                   });
                 } else {
-                  contex.root.$message.error(result.message);
+                  onMessage(result.message, "error", true);
                   return;
                 }
-              }).catch( ()=>{
-                contex.root.$message.error("error");
+              })
+              .catch(() => {
+                onMessage("异常", "error", true);
               });
           } else {
             Register(requestData)
               .then(response => {
                 let result = response.data;
                 if (result.resCode == 0) {
-                  context.root.$message({
-                    message: result.message,
-                    type: "success",
-                    showClose: true
-                  });
+                  onMessage(result.message, "success", true);
                 } else {
-                  contex.root.$message.error(result.message);
+                  onMessage(result.message, "error", true);
                   return;
                 }
               })
               .catch(error => {});
           }
         } else {
-          context.root.$message.error("有输入框为空,请检查");
+          onMessage("有输入框为空,请检查", "error", true);
           return false;
         }
         //为给定 ID 的 user 创建请求
@@ -360,6 +316,30 @@ export default {
       clearInterval(TimeDown.timer); //清掉倒计时
       TimeDown.timecount = 60;
       submitButtonEnable.value = true; //提交按钮不可用
+    };
+
+    /**封装 element-ui 的消息弹出框 */
+    const onMessage = (message, type, bolShow, timer) => {
+      context.root.$message({
+        message,
+        type,
+        duration: timer || 2000,
+        showClose: bolShow
+      });
+    };
+
+    const countDown = count => {
+      TimeDown.timecount = count;
+      TimeDown.timer = setInterval(() => {
+        --TimeDown.timecount;
+        if (TimeDown.timecount == 0) {
+          clearInterval(TimeDown.timer);
+          VcodeData.VcodeStatus = false;
+          VcodeData.VcodeContext = "再次获取";
+        } else {
+          VcodeData.VcodeContext = `倒计时${TimeDown.timecount}秒`;
+        }
+      }, 1000);
     };
 
     /**

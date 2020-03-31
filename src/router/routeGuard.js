@@ -3,13 +3,11 @@
  */
 import router from "./index"	//导入路由跳转
 import { getToken } from "../utils/appToken"
-import ElementUI from "element-ui";
-import "element-ui/lib/theme-chalk/index.css";
 const whiteRouteList = ['/login']	//设置路由白名单
 
 router.beforeEach((to, from, next) => {
 	if(getToken()){	//Token不存在则报错
-		alert("Token信息存在")
+		next()
 	}else{
 		if(whiteRouteList.indexOf(to.path) === -1){	//Token存在,但目标路由不在白名单中,则跳转回login页面
 			next('/login')	//当路由发生改变时,会再次触发 beforeEach 路由守卫的检查.
