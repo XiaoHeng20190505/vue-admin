@@ -8,7 +8,11 @@ export function getToken() {
 }
 /**设置 Token 的值 */
 export function setToken(value){
-	cookie.set(userToken, value)
+	return cookie.set(userToken, value)
+}
+/**移除 Token 的值 */
+export function removeToken() {
+	return cookie.remove(userToken)
 }
 /**获取 UserName 的值 */
 export function getUserNameToken() {

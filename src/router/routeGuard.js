@@ -6,7 +6,7 @@ import { getToken } from "../utils/appToken"
 const whiteRouteList = ['/login']	//设置路由白名单
 
 router.beforeEach((to, from, next) => {
-	if(getToken()){	//Token不存在则报错
+	if(!getToken()){	//Token不存在则报错
 		next()
 	}else{
 		if(whiteRouteList.indexOf(to.path) === -1){	//Token存在,但目标路由不在白名单中,则跳转回login页面
