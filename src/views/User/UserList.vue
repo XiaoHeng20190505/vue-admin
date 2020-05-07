@@ -56,7 +56,7 @@
       <el-button size="small">批量删除</el-button>
     </el-row>
     <!-- 新增/编辑用户对话框 -->
-    <el-dialog :visible.sync="dialogFormVisible">
+    <el-dialog :visible.sync="dialogFormVisible" top="20vh">
       <el-form :model="dialogForm">
         <el-form-item label="用户名" :label-width="dialogForm.formLabelWidth">
           <el-input v-model="dialogForm.userEmail" autocomplete="off"  style="width: 80%"></el-input>
